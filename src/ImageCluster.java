@@ -58,10 +58,10 @@ public class ImageCluster {
     //生成随机的初始中心
     private void initCenters(int k) {
         center = new dataItem[k];
-        centerSum = new dataItem[k];//用来统计每个聚类里面的RGB分别之和，方便计算均值
+        //用来统计每个聚类里面的RGB分别之和，方便计算均值
+        centerSum = new dataItem[k];
         int width, height;
         for (int i = 0; i < k; i++) {
-            //boolean flag=true;
             dataItem cent = new dataItem();
             dataItem cent2 = new dataItem();
 
@@ -124,7 +124,8 @@ public class ImageCluster {
                 centerSum[group].r += source[i][j].r;
                 centerSum[group].g += source[i][j].g;
                 centerSum[group].b += source[i][j].b;
-                centerSum[group].group += 1;//这个就是用来统计聚类里有几个点
+                //这个就是用来统计聚类里有几个点
+                centerSum[group].group += 1;
             }
         }
     }
@@ -153,9 +154,11 @@ public class ImageCluster {
         for (int i = 0; i < centerSum.length; i++) {
             rgbNum[i] = centerSum[i].r + centerSum[i].g + centerSum[i].b;
         }
-        double num = rgbNum[0]; //0为第一个数组下标
+        //0为第一个数组下标
+        double num = rgbNum[0];
         int flag = 0;
-        for (int i = 0; i < rgbNum.length; i++) { //开始循环一维数组
+        //开始循环一维数组
+        for (int i = 0; i < rgbNum.length; i++) {
             if (rgbNum[i] < num) {
                 num = rgbNum[i];
                 flag = i;
