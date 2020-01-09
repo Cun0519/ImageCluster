@@ -101,10 +101,6 @@ public class ImageCluster {
             if (distance[i] < minDistance) {
                 minDistance = distance[i];
                 minLocation = i;
-            } else if (distance[i] == minDistance) {
-                if ((Math.random() * 10) < 5) {
-                    minLocation = i;
-                }
             }
         }
         return minLocation;
@@ -112,21 +108,23 @@ public class ImageCluster {
 
     //每个点进行分类
     private void clusterSet() {
-        int group = -1;
+        int group;
         double distance[] = new double[k];
         for (int i = 0; i < source.length; i++) {
             for (int j = 0; j < source[0].length; j++) {
-                //求出距离中心点最短的中心
+                //求出该点与各个中心之间的距离
                 for (int q = 0; q < center.length; q++) {
                     distance[q] = distance(center[q], source[i][j]);
                 }
-                group = minDistance(distance);//寻找该点最近的中心
-                source[i][j].group = group;//把该点进行分类
-                centerSum[group].r += source[i][j].r;//分类完求出该类的RGB和
+                //寻找距离该点最近的中心
+                group = minDistance(distance);
+                //把该点进行分类
+                source[i][j].group = group;
+                //分类完求出该类的RGB和
+                centerSum[group].r += source[i][j].r;
                 centerSum[group].g += source[i][j].g;
                 centerSum[group].b += source[i][j].b;
                 centerSum[group].group += 1;//这个就是用来统计聚类里有几个点
-                group = -1;
             }
         }
     }
@@ -151,21 +149,9 @@ public class ImageCluster {
         Color white = new Color(255, 255, 255);
         Color black = new Color(0, 0, 0);
         BufferedImage nbi = new BufferedImage(source.length, source[0].length, BufferedImage.TYPE_INT_RGB);
-        for (int i = 0; i < source.length; i++) {
-            for (int j = 0; j < source[0].length; j++) {
-                if (source[i][j].group == 0) {
-                    rgbNum[0] += source[i][j].r + source[i][j].g + source[i][j].b;
-                }
-                else if (source[i][j].group == 1) {
-                    rgbNum[1] += source[i][j].r + source[i][j].g + source[i][j].b;
-                }
-                else if (source[i][j].group == 2) {
-                    rgbNum[2] += source[i][j].r + source[i][j].g + source[i][j].b;
-                }
-                else if (source[i][j].group == 3) {
-                    rgbNum[3] += source[i][j].r + source[i][j].g + source[i][j].b;
-                }
-            }
+
+        for (int i = 0; i < centerSum.length; i++) {
+            rgbNum[i] = centerSum[i].r + centerSum[i].g + centerSum[i].b;
         }
         double num = rgbNum[0]; //0为第一个数组下标
         int flag = 0;
@@ -194,11 +180,13 @@ public class ImageCluster {
 
     //进行kmeans计算的核心函数
     public void kmeans(String originPath, String outputPath, int k, int m) {
-        rgbNum = new double[k];
-        source = InitData(getImageData(originPath));
 
         this.k = k;
         this.m = m;
+
+        rgbNum = new double[k];
+        source = InitData(getImageData(originPath));
+
         //初始化聚类中心
         initCenters(k);
 
@@ -206,7 +194,6 @@ public class ImageCluster {
         for (int level = 0; level < m; level++) {
             clusterSet();
             setNewCenter();
-
         }
         clusterSet();
 
