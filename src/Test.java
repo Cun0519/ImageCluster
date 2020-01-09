@@ -1,8 +1,11 @@
 public class Test {
 
-    public static void main(String[] args){
-        ImageCluster ic=new ImageCluster();
-        ic.kmeans("/Users/xiecun/Documents/Graduation/data/1578538705811KR.jpg", "/Users/xiecun/Documents/Graduation/data/output.jpg",
-                2,10);
+    public static void main(String[] args) {
+        ImageCluster ic = new ImageCluster();
+        String dir = "/Users/xiecun/Documents/Graduation/data/";
+        String name = "1578538705811R";
+        int k = 3;
+        int m = 10;
+        ic.kmeans(dir + name + ".jpg", dir + name + "_" + k + "_" + m + "_.jpg", k, m);
     }
 }
